@@ -1,0 +1,21 @@
+tmp/**
+target/**
+bin/**
+
+venv/**
+py35venv/**
+
+.classpath
+
+.project
+.settings/**
+.idea/**
+*.iml
+
+
+# data files
+**/joke-dataset-master/**
+**.data
+
+# model training data, checkpoints
+**/trained/**
