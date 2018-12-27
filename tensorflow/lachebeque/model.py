@@ -17,6 +17,7 @@ MAX_SEQ_LEN = -1
 
 HIDDEN_LAYER_SIZE = -1
 CELL_SIZE = -1
+DROPOUT_RATE = -1
 
 
 def debug_print(x):
@@ -25,7 +26,7 @@ def debug_print(x):
 
 
 def init(hparams):
-    global MAX_SEQ_LEN, HIDDEN_LAYER_SIZE, CELL_SIZE, DEBUG, SCORE_TYPE
+    global MAX_SEQ_LEN, HIDDEN_LAYER_SIZE, CELL_SIZE, DEBUG, SCORE_TYPE, DROPOUT_RATE
     DEBUG = hparams['debug']
 
     SCORE_TYPE = {'score': 2,
@@ -36,6 +37,7 @@ def init(hparams):
 
     HIDDEN_LAYER_SIZE = hparams['hidden_layer_size']
     CELL_SIZE = hparams['cell_size']
+    DROPOUT_RATE = hparams['dropout_rate']
 
 
 def embed_words_from_text(texts):
@@ -110,6 +112,28 @@ def lachebeque2_model(texts, mode, params):
     return prediction
 
 
+def lachebeque4_model(texts, mode, params):
+    embedded, dim = embed_words_from_text(texts)
+    debug_print('>>> embedded: {}'.format(embedded))
+
+    reshaped = tf.reshape(embedded, [-1, MAX_SEQ_LEN, dim])
+    debug_print('>>> reshaped: {}'.format(reshaped))
+
+    cell = tf.nn.rnn_cell.GRUCell(CELL_SIZE)
+    output, state = tf.nn.dynamic_rnn(cell, reshaped, dtype=tf.float32)
+    debug_print('>>> state: {}'.format(state))
+
+    h1 = tf.layers.dense(state, HIDDEN_LAYER_SIZE, activation=tf.nn.relu)
+    debug_print('>>> h1: {}'.format(h1))
+
+    h2 = tf.layers.dense(h1, HIDDEN_LAYER_SIZE // 2, activation=tf.nn.relu)
+    debug_print('>>> h2: {}'.format(h2))
+
+    prediction = tf.layers.dense(h2, 1, activation=None)
+
+    return prediction
+
+
 def get_input_fn(file, mode=True, batch_size=256):
 
     def input_fn():
@@ -146,7 +170,8 @@ def serving_input_fn():
 def joke_regressor(features, labels, mode, params):
     model_functions = {
         'lachebeque1': lachebeque1_model,
-        'lachebeque2': lachebeque2_model
+        'lachebeque2': lachebeque2_model,
+        'lachebeque4': lachebeque4_model
     }
     model_function = model_functions[params['model']]
 
@@ -155,6 +180,8 @@ def joke_regressor(features, labels, mode, params):
     debug_print('>>> mode: {}'.format(mode))
     debug_print('>>> predictions: {}'.format(predictions))
     debug_print('>>> labels: {}'.format(labels))
+
+    # RMSE-to-beat: 0.00105552 (when using average norm_log_score (constant) as prediction)
 
     if mode == tf.estimator.ModeKeys.TRAIN or mode == tf.estimator.ModeKeys.EVAL:
         loss = tf.losses.mean_squared_error(

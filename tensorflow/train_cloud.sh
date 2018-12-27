@@ -8,7 +8,7 @@ TFVERSION=1.12
 MODULE=lachebeque
 
 MODEL="${1}"
-MODEL_VERSION="0_2"
+MODEL_VERSION="${2}"
 
 OUTDIR=gs://${PROJECT}/${MODEL}/trained/${MODEL_VERSION}
 PKG_PATH=${PWD}/${MODULE}
@@ -31,5 +31,6 @@ gcloud ml-engine jobs submit training ${JOBNAME} \
     --eval_data_path="gs://${PROJECT}/${MODULE}/data/eval.data"  \
     --train_steps=3000 \
     --model=${MODEL} \
-    --hidden_layer_size=32 \
-    --cell_size=20
+    --learning_rate=0.001 \
+    --cell_size=64 \
+    --hidden_layer_size=192 \

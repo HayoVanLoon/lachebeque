@@ -24,12 +24,6 @@ if __name__ == '__main__':
         default=1024
     )
     parser.add_argument(
-        '--learning_rate',
-        help='Initial learning rate for training',
-        type=float,
-        default=0.01
-    )
-    parser.add_argument(
         '--train_steps',
         help="""\
       Steps to run the training job for. A step is one batch-size,\
@@ -95,6 +89,12 @@ if __name__ == '__main__':
 
     # Hyperparameters
     parser.add_argument(
+        '--learning_rate',
+        help='Initial learning rate for training',
+        type=float,
+        default=0.001
+    )
+    parser.add_argument(
         '--cell_size',
         help="""\
       GRU cell size
@@ -108,7 +108,15 @@ if __name__ == '__main__':
       GRU cell size
       """,
         type=int,
-        default=10
+        default=32
+    )
+    parser.add_argument(
+        '--dropout_rate',
+        help="""\
+      Dropout rate [0, 1]
+      """,
+        type=float,
+        default=.2
     )
 
     args = parser.parse_args()

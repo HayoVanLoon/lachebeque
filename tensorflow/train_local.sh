@@ -2,8 +2,8 @@
 
 MODULE=lachebeque
 
-MODEL=$1
-MODEL_VERSION="0_2"
+MODEL="${1}"
+MODEL_VERSION="${2}"
 
 OUTDIR=${PWD}/trained/${MODEL_VERSION}
 PKG_PATH=${PWD}/${MODULE}
@@ -17,6 +17,8 @@ gcloud ml-engine local train \
    --output_dir=${OUTDIR} \
    --train_data_path=${PWD}/data/train.data \
    --eval_data_path=${PWD}/data/eval.data \
-   --learning_rate=0.01 \
    --train_steps=100 \
-   --model=${MODEL}
+   --model=${MODEL} \
+   --learning_rate=0.001 \
+   --cell_size=64 \
+   --hidden_layer_size=192
