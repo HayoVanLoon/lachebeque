@@ -29,8 +29,10 @@ gcloud ml-engine jobs submit training ${JOBNAME} \
     --output_dir=${OUTDIR} \
     --train_data_path="gs://${PROJECT}/${MODULE}/data/train.data" \
     --eval_data_path="gs://${PROJECT}/${MODULE}/data/eval.data"  \
-    --train_steps=3000 \
+    --train_steps=9000 \
     --model=${MODEL} \
     --learning_rate=0.001 \
     --cell_size=64 \
-    --hidden_layer_size=192 \
+    --hidden_layer1_size=96 \
+    --hidden_layer2_size=192
+

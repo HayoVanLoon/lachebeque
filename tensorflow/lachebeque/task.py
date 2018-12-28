@@ -111,6 +111,22 @@ if __name__ == '__main__':
         default=32
     )
     parser.add_argument(
+        '--hidden_layer1_size',
+        help="""\
+      Size of hidden layer 1
+      """,
+        type=int,
+        default=192
+    )
+    parser.add_argument(
+        '--hidden_layer2_size',
+        help="""\
+      Size of hidden layer 2
+      """,
+        type=int,
+        default=(192 // 2)
+    )
+    parser.add_argument(
         '--dropout_rate',
         help="""\
       Dropout rate [0, 1]

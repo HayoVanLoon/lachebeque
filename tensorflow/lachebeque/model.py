@@ -16,6 +16,9 @@ DEBUG = False
 MAX_SEQ_LEN = -1
 
 HIDDEN_LAYER_SIZE = -1
+HIDDEN_LAYER1_SIZE = -1
+HIDDEN_LAYER2_SIZE = -1
+
 CELL_SIZE = -1
 DROPOUT_RATE = -1
 
@@ -26,7 +29,8 @@ def debug_print(x):
 
 
 def init(hparams):
-    global MAX_SEQ_LEN, HIDDEN_LAYER_SIZE, CELL_SIZE, DEBUG, SCORE_TYPE, DROPOUT_RATE
+    global MAX_SEQ_LEN, HIDDEN_LAYER_SIZE, CELL_SIZE, DEBUG, SCORE_TYPE, DROPOUT_RATE, \
+        HIDDEN_LAYER1_SIZE, HIDDEN_LAYER2_SIZE
     DEBUG = hparams['debug']
 
     SCORE_TYPE = {'score': 2,
@@ -36,6 +40,9 @@ def init(hparams):
     MAX_SEQ_LEN = hparams['max_sequence_length']
 
     HIDDEN_LAYER_SIZE = hparams['hidden_layer_size']
+    HIDDEN_LAYER1_SIZE = hparams['hidden_layer1_size']
+    HIDDEN_LAYER2_SIZE = hparams['hidden_layer2_size']
+
     CELL_SIZE = hparams['cell_size']
     DROPOUT_RATE = hparams['dropout_rate']
 
@@ -123,10 +130,10 @@ def lachebeque4_model(texts, mode, params):
     output, state = tf.nn.dynamic_rnn(cell, reshaped, dtype=tf.float32)
     debug_print('>>> state: {}'.format(state))
 
-    h1 = tf.layers.dense(state, HIDDEN_LAYER_SIZE, activation=tf.nn.relu)
+    h1 = tf.layers.dense(state, HIDDEN_LAYER1_SIZE, activation=tf.nn.relu)
     debug_print('>>> h1: {}'.format(h1))
 
-    h2 = tf.layers.dense(h1, HIDDEN_LAYER_SIZE // 2, activation=tf.nn.relu)
+    h2 = tf.layers.dense(h1, HIDDEN_LAYER2_SIZE, activation=tf.nn.relu)
     debug_print('>>> h2: {}'.format(h2))
 
     prediction = tf.layers.dense(h2, 1, activation=None)

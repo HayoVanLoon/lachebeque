@@ -21,4 +21,5 @@ gcloud ml-engine local train \
    --model=${MODEL} \
    --learning_rate=0.001 \
    --cell_size=64 \
-   --hidden_layer_size=192
+   --hidden_layer1_size=192 \
+   --hidden_layer2_size=96
